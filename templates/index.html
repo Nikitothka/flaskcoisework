@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">File Upload</h1>
+
+        <div class="section">
+            <h2 class="subtitle">File Upload</h2>
+            <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" class="file-input" required>
+                <div class="input-container">
+                    <label for="selected-work-id">Выберите работу:</label>
+                    <select id="selected-work-id" class="select">
+                        <option value="">Выберите название работы</option>
+                        {% for work_name in work_names %}
+                            <option value="{{ work_name }}">{{ work_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="button">Upload</button>
+
+                <div class="input-container">
+                    <input type="checkbox" id="create-new-work" onchange="toggleWorkSection()">
+                    <label for="create-new-work">Создать новую работу</label>
+                </div>
+
+                <div class="section" id="work-section" style="display: none;">
+                    <div id="create-work">
+                        <h3>Создать новую работу</h3>
+                        <div class="input-container">
+                            <label for="new-work-id">Название работы:</label>
+                            <input type="text" id="new-work-id" class="input" placeholder="Введите название работы">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="loading-spinner" class="spinner">
+            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function toggleWorkSection() {
+            var checkbox = document.getElementById("create-new-work");
+            var section = document.getElementById("work-section");
+
+            if (checkbox.checked) {
+                section.style.display = "block";
+            } else {
+                section.style.display = "none";
+            }
+        }
+    </script>
+
+    <script src="static/script.js"></script>
+</body>
+</html>
