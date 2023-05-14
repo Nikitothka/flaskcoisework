@@ -60,11 +60,8 @@ class ApiHandler:
             text = re.sub(r'\\u([\dA-Fa-f]{4})', lambda m: chr(int(m.group(1), 16)), text)
             for key, val in keyid_size_cnt.items():
                 a = text[k:int(key)]
-                if int(key) + int(val[0]) <= len(text):
-                    b = text[int(key):int(key) + int(val[0])]
-                else:
-                    b = text[int(key):len(text)]
-                k = len(text)
+                b = text[int(key):int(key) + int(val[0])]
+                k = int(key)+ int(val[0])
                 if a:
                     result += self.highlight_words(a, '1')
 
@@ -73,8 +70,6 @@ class ApiHandler:
                         result += self.highlight_words(b, 'red')
                     else:
                         result += self.highlight_words(b, 'orange')
-                if k == len(text):
-                    break
 
             result += self.highlight_words(text[k:], '1')
 
