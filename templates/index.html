@@ -1,65 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>File Upload</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <!-- Подключаем Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">File Upload</h1>
 
-        <div class="section">
-            <h2 class="subtitle">File Upload</h2>
-            <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
-                <input type="file" name="file" class="file-input" required>
-                <div class="input-container">
-                    <label for="selected-work-id">Выберите работу:</label>
-                    <select id="selected-work-id" class="select">
-                        <option value="">Выберите название работы</option>
-                        {% for work_name in work_names %}
-                            <option value="{{ work_name }}">{{ work_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <button type="submit" class="button">Upload</button>
-
-                <div class="input-container">
-                    <input type="checkbox" id="create-new-work" onchange="toggleWorkSection()">
-                    <label for="create-new-work">Создать новую работу</label>
-                </div>
-
-                <div class="section" id="work-section" style="display: none;">
-                    <div id="create-work">
-                        <h3>Создать новую работу</h3>
-                        <div class="input-container">
-                            <label for="new-work-id">Название работы:</label>
-                            <input type="text" id="new-work-id" class="input" placeholder="Введите название работы">
-                        </div>
-                    </div>
-                </div>
-            </form>
+<div class="container">
+    <form id="upload-form" action="http://localhost:8080/upload" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="file-upload">Выберите файл для загрузки (Word, PDF, TXT):</label>
+            <input type="file" id="file-upload" name="file" class="form-control-file" accept=".doc,.docx,.pdf,.txt">
         </div>
 
-        <div id="loading-spinner" class="spinner">
-            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <div class="form-group">
+            <label for="work-select">Выберите работу:</label>
+            <select id="work-select" name="work-select" class="form-control">
+                <option value="">--Выберите работу--</option>
+                <!-- Опции будут заполняться динамически -->
+            </select>
         </div>
 
-        <div id="result"></div>
+        <div class="form-group form-check">
+            <input type="checkbox" id="new-work-checkbox" name="new-work-checkbox" class="form-check-input">
+            <label class="form-check-label" for="new-work-checkbox">Создать новую работу</label>
+        </div>
+
+        <div class="form-group">
+            <label for="new-work-name">Название новой работы:</label>
+            <input type="text" id="new-work-name" name="new-work-name" class="form-control" disabled>
+        </div>
+
+        <button type="button" id="submit-button" class="btn btn-primary">Отправить</button>
+    </form>
+
+    <div id="loading-indicator" style="display: none;">
+    Пожалуйста, подождите, идет загрузка...
     </div>
 
-    <script>
-        function toggleWorkSection() {
-            var checkbox = document.getElementById("create-new-work");
-            var section = document.getElementById("work-section");
 
-            if (checkbox.checked) {
-                section.style.display = "block";
-            } else {
-                section.style.display = "none";
-            }
-        }
-    </script>
 
-    <script src="static/script.js"></script>
+    <div id="result-container" class="mt-3">
+        <!-- Здесь будут показаны результаты запроса -->
+    </div>
+</div>
+
+<script src="/static/script.js"></script>
+
 </body>
 </html>

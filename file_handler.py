@@ -1,7 +1,7 @@
 import os
-from PyPDF2 import PdfReader
+import codecs
+import pdfplumber
 from docx import Document
-import textract
 
 class FileHandler:
     def __init__(self, uploaded_file):
@@ -28,11 +28,10 @@ class FileHandler:
             return None
 
     def extract_text_from_pdf(self):
-        pdf_reader = PdfReader(self.file_path)
-        num_pages = len(pdf_reader.pages)
         text = ''
-        for page in range(num_pages):
-            text += pdf_reader.pages[page].extract_text()
+        with pdfplumber.open(self.file_path) as pdf:
+            for page in pdf.pages:
+                text += page.extract_text()
         return text
 
     def extract_text_from_doc(self):
@@ -41,10 +40,21 @@ class FileHandler:
             paragraphs = [p.text for p in doc.paragraphs if p.text.strip()]
             text = '\n'.join(paragraphs)
             return text
+
         except Exception as e:
             print(f"Error extracting text from DOC/DOCX: {e}")
             return ''
 
     def extract_text_from_txt(self):
-        text = textract.process(self.file_path)
-        return text.decode('utf-8')
+        try:
+            with codecs.open(self.file_path, 'r', 'utf-8') as f:
+                text = f.read()
+            return text
+        except UnicodeDecodeError:
+            try:
+                with codecs.open(self.file_path, 'r', 'cp1251') as f:
+                    text = f.read()
+                return text
+            except Exception as e:
+                print(f"Error extracting text from TXT: {e}")
+                return ''

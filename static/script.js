@@ -1,46 +1,73 @@
-$(document).ready(function() {
-    $('#create-work-btn').click(function() {
-        var newWorkId = $('#new-work-id').val().trim();
-        if (newWorkId !== '') {
-            var optionExists = $('#existing-work-select option[value="' + newWorkId + '"]').length > 0;
-            if (!optionExists) {
-                $('#existing-work-select').append('<option value="' + newWorkId + '">' + newWorkId + '</option>');
-            }
-            $('#existing-work-select').val(newWorkId);
+window.onload = function () {
+    // Загрузка сохраненных работ из localStorage
+    const works = JSON.parse(localStorage.getItem("works")) || [];
+    const selectElement = document.getElementById("work-select");
+    works.forEach(work => {
+        const optionElement = document.createElement("option");
+        optionElement.value = work;
+        optionElement.textContent = work;
+        selectElement.appendChild(optionElement);
+    });
+
+    const fileInput = document.getElementById("file-upload");
+    const newWorkCheckbox = document.getElementById("new-work-checkbox");
+    const newWorkNameInput = document.getElementById("new-work-name");
+    const submitButton = document.getElementById("submit-button");
+    const form = document.getElementById("upload-form");
+    const loadingIndicator = document.getElementById("loading-indicator");
+    const resultContainer = document.getElementById("result-container");
+
+    newWorkCheckbox.onchange = function () {
+        if (newWorkCheckbox.checked) {
+            selectElement.style.display = "none";
+            newWorkNameInput.style.display = "block";
+            newWorkNameInput.disabled = false;
+        } else {
+            selectElement.style.display = "block";
+            newWorkNameInput.style.display = "none";
+            newWorkNameInput.disabled = true;
         }
-    });
+    };
 
-    $('#choose-work-btn').click(function() {
-        var selectedWorkId = $('#existing-work-select').val();
-        if (selectedWorkId) {
-            $('#selected-work-id').val(selectedWorkId);
+    submitButton.onclick = function () {
+        if (fileInput.files.length === 0) {
+            alert("Пожалуйста, выберите файл для загрузки.");
+            return;
         }
-    });
 
-    $('#upload-form').submit(function(event) {
-        event.preventDefault();
-        $('#result').empty();
+        if (!newWorkCheckbox.checked && selectElement.value === "") {
+            alert("Пожалуйста, выберите работу или создайте новую.");
+            return;
+        }
 
-        var form = $(this);
-        var formData = new FormData(form[0]);
+        const formData = new FormData(form);
 
-        $.ajax({
-            url: form.attr('action'),
-            type: form.attr('method'),
-            data: formData,
-            contentType: false,
-            processData: false,
-            beforeSend: function() {
-                $('#loading-spinner').show();
-            },
-            success: function(response) {
-                $('#loading-spinner').hide();
-                $('#result').html(response);
-            },
-            error: function(xhr, status, error) {
-                $('#loading-spinner').hide();
-                console.log(error);
-            }
-        });
-    });
-});
+        // Очистка результатов перед новым запросом
+        resultContainer.innerHTML = "";
+
+        loadingIndicator.style.display = "block";
+
+        fetch(form.action, {
+            method: form.method,
+            body: formData,
+        }).then(response => response.text())
+            .then(result => {
+                loadingIndicator.style.display = "none";
+                resultContainer.innerHTML = result;
+                const workName = newWorkCheckbox.checked ? newWorkNameInput.value : selectElement.value;
+                if (works.indexOf(workName) === -1) {
+                    works.push(workName);
+                    localStorage.setItem("works", JSON.stringify(works));
+                    const optionElement = document.createElement("option");
+                    optionElement.value = workName;
+                    optionElement.textContent = workName;
+                    selectElement.appendChild(optionElement);
+                }
+            })
+            .catch(error => {
+                loadingIndicator.style.display = "none";
+                console.error('Error:', error);
+                resultContainer.innerHTML = "Произошла ошибка при отправке данных на сервер.";
+            });
+    };
+};
