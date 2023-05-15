@@ -62,15 +62,17 @@ class ApiHandler:
                 a = text[k:int(key)]
                 b = text[int(key):int(key) + int(val[0])]
                 k = int(key)+ int(val[0])
+
                 if a:
                     result += self.highlight_words(a, '1')
-
                 if b:
                     if int(val[1]) > 2:
                         result += self.highlight_words(b, 'red')
                     else:
                         result += self.highlight_words(b, 'orange')
-
+                if k > len(text):
+                    result += self.highlight_words(text[k:], '1')
+                    break
             result += self.highlight_words(text[k:], '1')
 
             return Markup(f'<h1>Уникальность текста {percent:.2f} %</h1> <p>{result}</p>')
