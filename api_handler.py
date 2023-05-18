@@ -33,7 +33,7 @@ class ApiHandler:
         response = requests.post(url, headers=headers, json=data)
 
         # Добавляем логгирование после получения ответа
-        logger.debug(f"Received API response: {response.text}, Status Code: {response.status_code}")
+        # logger.debug(f"Received API response: {response.text}, Status Code: {response.status_code}")
 
         return response.text, response.status_code
 

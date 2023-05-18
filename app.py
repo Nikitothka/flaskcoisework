@@ -1,12 +1,12 @@
 import time
 
 from flask import Flask, render_template, request
-from flask_cors import CORS  # Новый импорт
+from flask_cors import CORS
 from file_handler import FileHandler
 from api_handler import ApiHandler
 
 app = Flask(__name__)
-CORS(app)  # Включает CORS для всех маршрутов
+CORS(app)
 
 @app.route('/')
 def index():
@@ -18,13 +18,11 @@ def upload():
 
     try:
         work_id =  request.values['new-work-name']
-        flag = True
     except KeyError:
         work_id =  request.values['work-select']
     print(work_id)
     if uploaded_file.filename != '':
-        start_time = time.time()  # Start time for measuring execution time
-
+        start_time = time.time()
 
         file_handler = FileHandler(uploaded_file)
         if file_handler.save_file():
@@ -34,9 +32,8 @@ def upload():
             response, status_code = api_handler.make_api_request(text,work_id=work_id)
             result = api_handler.process_api_response(response,status_code)
 
-            execution_time = time.time() - start_time  # Calculate execution time
+            execution_time = time.time() - start_time
 
-            # Add execution time HTML
             time_html = f'<div class="execution-time">Execution Time: {execution_time:.2f} seconds</div>'
             result_html = render_template('result.html', result=result, time=time_html)
 

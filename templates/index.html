@@ -3,6 +3,8 @@
 <head>
     <!-- Подключаем Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 
@@ -34,10 +36,13 @@
         <button type="button" id="submit-button" class="btn btn-primary">Отправить</button>
     </form>
 
-    <div id="loading-indicator" style="display: none;">
-    Пожалуйста, подождите, идет загрузка...
-    </div>
-
+        <div id="loading-indicator" style="display: none;">
+            <div id="loading-bar" style="width: 0%; height: 20px; background: green;"></div>
+        </div>
+        <div id="loader-container" class="loader-container">
+            <div class="loader-circle"></div>
+            <div id="loader-percentage" class="loader-percentage">0%</div>
+        </div>
 
 
     <div id="result-container" class="mt-3">
@@ -45,7 +50,9 @@
     </div>
 </div>
 
+<!--<script src="/static/test.js"></script>-->
 <script src="/static/script.js"></script>
+
 
 </body>
 </html>
