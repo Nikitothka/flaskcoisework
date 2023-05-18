@@ -47,6 +47,7 @@ window.onload = function () {
     resultContainer.innerHTML = "";
 
     loaderContainer.style.display = "block";
+    loaderPercentage.textContent = '0%';
 
     const xhr = new XMLHttpRequest();
     xhr.open(form.method, form.action);
